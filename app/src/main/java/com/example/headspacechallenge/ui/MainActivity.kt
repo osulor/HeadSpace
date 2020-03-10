@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.headspacechallenge.R
 import com.example.headspacechallenge.data.remote.Webservices
 import com.example.headspacechallenge.data.repository.FeatureRepositoryImpl
+import com.example.headspacechallenge.database.DatabaseProvider
 import com.example.headspacechallenge.ui.adapter.ItemAdapter
 import com.example.headspacechallenge.viewmodel.FeatureViewModel
 import com.example.headspacechallenge.viewmodel.FeatureViewModelFactory
@@ -17,12 +18,15 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var viewModel: FeatureViewModel
+    private lateinit var viewModel: FeatureViewModel
     lateinit var itemAdapter: ItemAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+       val database = DatabaseProvider.provideRoomDatabase(application)
+
         setUpRecyclerView()
 
         viewModel = ViewModelProviders.of(
@@ -33,6 +37,7 @@ class MainActivity : AppCompatActivity() {
         viewModel.items.observe(this, Observer {
             itemAdapter.featureList.clear()
             itemAdapter.featureList.addAll(it)
+            database.featureDAO().insertAll(it)
             itemAdapter.notifyDataSetChanged()
         })
 
