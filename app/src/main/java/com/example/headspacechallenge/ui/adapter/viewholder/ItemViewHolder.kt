@@ -4,7 +4,6 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.headspacechallenge.data.model.FeatureModel
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_feature.view.*
 
 class ItemViewHolder(item: View) : RecyclerView.ViewHolder(item) {
