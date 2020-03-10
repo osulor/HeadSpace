@@ -10,7 +10,7 @@ import io.reactivex.Maybe
 @Dao
 interface FeatureDAO {
     @Query("SELECT * FROM feature")
-    fun getAll(): Maybe<List<FeatureModel>>
+    fun getAll(): List<FeatureModel>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(models: List<FeatureModel>)

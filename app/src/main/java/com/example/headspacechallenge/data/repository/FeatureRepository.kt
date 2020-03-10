@@ -4,5 +4,5 @@ import com.example.headspacechallenge.data.model.FeatureModel
 import io.reactivex.Single
 
 interface FeatureRepository {
-    fun getAll(): Single<List<FeatureModel>>
+    fun getPics(): Single<List<FeatureModel>>
 }

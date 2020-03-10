@@ -32,5 +32,5 @@ interface Webservices {
     }
 
     @GET(Constants.picsumURL)
-    fun getAll(): Single<List<FeatureModel>>
+    fun getPics(): Single<List<FeatureModel>>
 }
