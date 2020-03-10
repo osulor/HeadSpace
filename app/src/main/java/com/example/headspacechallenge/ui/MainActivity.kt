@@ -15,6 +15,8 @@ import com.example.headspacechallenge.ui.adapter.ItemAdapter
 import com.example.headspacechallenge.viewmodel.FeatureViewModel
 import com.example.headspacechallenge.viewmodel.FeatureViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
@@ -37,7 +39,10 @@ class MainActivity : AppCompatActivity() {
         viewModel.items.observe(this, Observer {
             itemAdapter.featureList.clear()
             itemAdapter.featureList.addAll(it)
-            database.featureDAO().insertAll(it)
+            GlobalScope.launch {
+                database.featureDAO().insertAll(it)
+            }
+
             itemAdapter.notifyDataSetChanged()
         })
 
