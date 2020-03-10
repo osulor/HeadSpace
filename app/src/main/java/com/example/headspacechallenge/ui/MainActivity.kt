@@ -19,6 +19,7 @@ import com.example.headspacechallenge.database.HeadspaceDB
 import com.example.headspacechallenge.ui.adapter.ItemAdapter
 import com.example.headspacechallenge.viewmodel.FeatureViewModel
 import com.example.headspacechallenge.viewmodel.FeatureViewModelFactory
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -76,6 +77,7 @@ class MainActivity : AppCompatActivity() {
 
         btnRetry.setOnClickListener {
             viewModel.getPicsFromAPI()
+            showSuccessSnackBar()
         }
         swipeRefresh.setOnRefreshListener {
             viewModel.getPicsFromAPI()
@@ -87,6 +89,7 @@ class MainActivity : AppCompatActivity() {
     fun retrieveData(){
         if(isNetworkAvailable(this)){
             viewModel.getPicsFromAPI()
+            showSuccessSnackBar()
         } else {
             var items = listOf<FeatureModel>()
             GlobalScope.launch {
@@ -95,7 +98,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             viewModel.items.value = items
-            Toast.makeText(this,"NO INTERNET",Toast.LENGTH_LONG).show()
+           showConnectivityInfosSnackBar()
         }
     }
 
@@ -137,5 +140,22 @@ class MainActivity : AppCompatActivity() {
         val connectivityManager=activity?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val networkInfo=connectivityManager.activeNetworkInfo
         return  networkInfo!=null && networkInfo.isConnected
+    }
+
+    fun showSuccessSnackBar(){
+        Snackbar.make(
+            rvAlbum,
+            "Data have successfully been retrieved. Pull down to refresh",
+            Snackbar.LENGTH_LONG
+        ).show()
+    }
+
+    fun showConnectivityInfosSnackBar(){
+
+        Snackbar.make(
+            rvAlbum,
+            "NO INTERNET CONNECTION",
+            Snackbar.LENGTH_LONG
+        ).show()
     }
 }

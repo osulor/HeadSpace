@@ -23,6 +23,7 @@ class FeatureViewModel(private val featureRepository: FeatureRepository,
                 } else {
                     items.value = result
                     loadingState.value = LoadingState.SUCCESS
+
                 }
             }, {
                 when (it) {
