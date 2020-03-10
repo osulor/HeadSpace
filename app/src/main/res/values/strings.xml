@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">HeadSpaceChallenge</string>
+    <string name="title">Title :</string>
+    <string name="author">Author :</string>
+    <string name="height">Height :</string>
+    <string name="width">Width :</string>
+    <string name="dummy_message">DummyMessage</string>
+    <string name="retry">Retry</string>
 </resources>
