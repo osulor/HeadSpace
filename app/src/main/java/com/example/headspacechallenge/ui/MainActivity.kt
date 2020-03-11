@@ -71,6 +71,7 @@ class MainActivity : AppCompatActivity() {
             showSuccessSnackBar()
         } else {
             viewModel.retrieveItemsFromDB()
+            viewModel.loadingState.value = FeatureViewModel.LoadingState.ERROR
             showConnectivityInfosSnackBar()
         }
     }

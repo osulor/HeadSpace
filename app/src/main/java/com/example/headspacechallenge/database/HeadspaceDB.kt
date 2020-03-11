@@ -19,7 +19,5 @@ object DatabaseProvider {
 
 @Database(entities = [FeatureModel::class], version = 1)
 abstract class HeadspaceDB: RoomDatabase(){
-
     abstract fun featureDAO(): FeatureDAO
-
 }
