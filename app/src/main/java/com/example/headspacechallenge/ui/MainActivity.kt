@@ -28,17 +28,27 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        setUpRecyclerView()
-
         viewModel = ViewModelProviders.of(
             this,
             FeatureViewModelFactory(FeatureRepositoryImpl(Webservices.instance), application)
         ).get(FeatureViewModel::class.java)
 
-        viewModel.items.observe(this, Observer {
-            itemAdapter.featureList.clear()
-            itemAdapter.featureList.addAll(it)
+        setUpRecyclerView()
+        observeData()
+        retrieveData()
 
+        btnRetry.setOnClickListener {
+            retrieveData()
+        }
+        swipeRefresh.setOnRefreshListener {
+            retrieveData()
+        }
+    }
+
+    fun observeData(){
+        viewModel.items.observe(this, Observer {
+            //itemAdapter.featureList.clear()
+            itemAdapter.featureList.addAll(it)
             itemAdapter.notifyDataSetChanged()
         })
 
@@ -53,16 +63,6 @@ class MainActivity : AppCompatActivity() {
                 else -> displayMessageContainer()
             }
         })
-
-        retrieveData()
-
-        btnRetry.setOnClickListener {
-            viewModel.getPicsFromAPI()
-            showSuccessSnackBar()
-        }
-        swipeRefresh.setOnRefreshListener {
-            viewModel.getPicsFromAPI()
-        }
     }
 
     fun retrieveData() {
@@ -71,7 +71,7 @@ class MainActivity : AppCompatActivity() {
             showSuccessSnackBar()
         } else {
             viewModel.retrieveItemsFromDB()
-            viewModel.loadingState.value = FeatureViewModel.LoadingState.ERROR
+            viewModel.loadingState.value = FeatureViewModel.LoadingState.SUCCESS
             showConnectivityInfosSnackBar()
         }
     }

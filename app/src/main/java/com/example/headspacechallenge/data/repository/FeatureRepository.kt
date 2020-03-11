@@ -5,4 +5,5 @@ import io.reactivex.Single
 
 interface FeatureRepository {
     fun getPics(): Single<List<FeatureModel>>
+
 }

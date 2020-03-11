@@ -77,6 +77,8 @@ class FeatureViewModel(
             }
         }
         items.value = pictures
+        loadingState.value = LoadingState.SUCCESS
+       // Log.d("tag","value: " + items.value.size.toString() )
     }
 
     override fun onCleared() {

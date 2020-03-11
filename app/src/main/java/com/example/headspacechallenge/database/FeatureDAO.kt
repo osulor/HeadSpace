@@ -13,7 +13,7 @@ interface FeatureDAO {
     fun getAll(): List<FeatureModel>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(models: List<FeatureModel>)
+   fun insertAll(models: List<FeatureModel>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(featureModel: FeatureModel)
