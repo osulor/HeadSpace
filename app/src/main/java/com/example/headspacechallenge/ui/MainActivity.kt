@@ -10,53 +10,34 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.room.Room
 import com.example.headspacechallenge.R
-import com.example.headspacechallenge.data.model.FeatureModel
 import com.example.headspacechallenge.data.remote.Webservices
 import com.example.headspacechallenge.data.repository.FeatureRepositoryImpl
-import com.example.headspacechallenge.database.HeadspaceDB
 import com.example.headspacechallenge.ui.adapter.ItemAdapter
 import com.example.headspacechallenge.viewmodel.FeatureViewModel
 import com.example.headspacechallenge.viewmodel.FeatureViewModelFactory
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var viewModel: FeatureViewModel
     lateinit var itemAdapter: ItemAdapter
 
-    lateinit var database : HeadspaceDB
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        database = Room.databaseBuilder(this,HeadspaceDB::class.java,"headspace-database")
-            .allowMainThreadQueries()
-            .fallbackToDestructiveMigration()
-            .build()
 
         setUpRecyclerView()
 
         viewModel = ViewModelProviders.of(
             this,
-            FeatureViewModelFactory(FeatureRepositoryImpl(Webservices.instance))
-        )
-            .get(FeatureViewModel::class.java)
+            FeatureViewModelFactory(FeatureRepositoryImpl(Webservices.instance), application)
+        ).get(FeatureViewModel::class.java)
+
         viewModel.items.observe(this, Observer {
             itemAdapter.featureList.clear()
             itemAdapter.featureList.addAll(it)
-            GlobalScope.launch {
-                withContext(Dispatchers.IO) {
-                    database.featureDAO().insertAll(it)
-                }
-            }
 
             itemAdapter.notifyDataSetChanged()
         })
@@ -82,23 +63,15 @@ class MainActivity : AppCompatActivity() {
         swipeRefresh.setOnRefreshListener {
             viewModel.getPicsFromAPI()
         }
-
-
     }
 
-    fun retrieveData(){
-        if(isNetworkAvailable(this)){
+    fun retrieveData() {
+        if (isNetworkAvailable(this)) {
             viewModel.getPicsFromAPI()
             showSuccessSnackBar()
         } else {
-            var items = listOf<FeatureModel>()
-            GlobalScope.launch {
-                withContext(Dispatchers.IO){
-                    items = database.featureDAO().getAll()
-                }
-            }
-            viewModel.items.value = items
-           showConnectivityInfosSnackBar()
+            viewModel.retrieveItemsFromDB()
+            showConnectivityInfosSnackBar()
         }
     }
 
@@ -135,14 +108,14 @@ class MainActivity : AppCompatActivity() {
         rvAlbum.adapter = itemAdapter
     }
 
-
     fun isNetworkAvailable(activity: Activity): Boolean {
-        val connectivityManager=activity?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val networkInfo=connectivityManager.activeNetworkInfo
-        return  networkInfo!=null && networkInfo.isConnected
+        val connectivityManager =
+            activity?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkInfo = connectivityManager.activeNetworkInfo
+        return networkInfo != null && networkInfo.isConnected
     }
 
-    fun showSuccessSnackBar(){
+    fun showSuccessSnackBar() {
         Snackbar.make(
             rvAlbum,
             "Data have successfully been retrieved. Pull down to refresh",
@@ -150,8 +123,7 @@ class MainActivity : AppCompatActivity() {
         ).show()
     }
 
-    fun showConnectivityInfosSnackBar(){
-
+    fun showConnectivityInfosSnackBar() {
         Snackbar.make(
             rvAlbum,
             "NO INTERNET CONNECTION",

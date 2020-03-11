@@ -6,12 +6,10 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
-class FeatureRepositoryImpl (private val webservices: Webservices) : FeatureRepository {
+class FeatureRepositoryImpl(private val webservices: Webservices) : FeatureRepository {
     override fun getPics(): Single<List<FeatureModel>> {
         return webservices.getPics()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-
     }
-
 }
