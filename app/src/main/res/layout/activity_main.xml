@@ -60,6 +60,4 @@
             android:text="@string/retry"
             android:textColor="@android:color/white" />
     </LinearLayout>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
